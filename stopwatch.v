@@ -7,15 +7,6 @@ module stopwatch(
     output [5:0] state     //6-bits to represent the highest number 59
 );
 
-/////////////////////////// (Luke) /////////////////////////////////////////
-// TODO: MISSING EN IMPLEMENTATION. EN SHOULD WORK AS FOLLOWS:
-// en=1: nextState = currentState + 1 (count)
-// en=0: nextState = currentState (pause)
-// Also important note: sw[0] determines what mode is currently running:
-// sw[0]=0: stopwatch, sw[0]=1: timer
-// sw[1] is used exclusively in stopwatch as a run/pause (1/0 enable signal)
-////////////////////////////////////////////////////////////////////////////
-
 wire upperLimit = state[5] & state[4] & state[3] & state[2] & (~state[1]) & (~state[0]);
 wire realReset = rst | upperLimit; // Reset if upperLimit reaches 60, or asynch reset is 1
 
