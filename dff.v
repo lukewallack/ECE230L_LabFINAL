@@ -1,17 +1,17 @@
 module dff(
-	input d,
+	input D,
 	input clk,
 	input rst,     // Asynchronous reset (counter = 0)
-	output reg q
+	output reg Q
 );
 	initial begin
-		q <= 0;
+		Q <= 0;
 	end
 	
 	always @(posedge clk, posedge rst) begin
 		if (rst)
-			q <= 0;
+			Q <= 0;
 		else
-			q <= d;
+			Q <= D;
 	end
 endmodule

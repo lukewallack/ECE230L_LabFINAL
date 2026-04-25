@@ -16,20 +16,23 @@ module stopwatch(
 // sw[1] is used exclusively in stopwatch as a run/pause (1/0 enable signal)
 ////////////////////////////////////////////////////////////////////////////
 
+wire upperLimit = state[5] & state[4] & state[3] & state[2] & (~state[1]) & (~state[0]);
+wire realReset = rst | upperLimit; // Reset if upperLimit reaches 60, or asynch reset is 1
+
 //bit 0
 wire D0;
 wire Cout0;
 
 dff dff0(
     .D(D0),
-    .Clk(Clk),
-    .Q(Bit0),
-    .Reset(rst)
+    .clk(clk),
+    .Q(state[0]),
+    .rst(realReset)
 );
 
 full_adder fa0(
-    .B(en), // incorrect?
-    .A(Bit0),
+    .B(en),
+    .A(state[0]),
     .Cin(1'b0),
     .Y(D0),
     .Cout(Cout0)
@@ -42,14 +45,14 @@ wire Cout1;
 
 dff dff1(
     .D(D1),
-    .Clk(Clk),
-    .Q(Bit1),
-    .Reset(rst)
+    .clk(clk),
+    .Q(state[1]),
+    .rst(realReset)
 );
 
 full_adder fa1(
     .B(1'b0),
-    .A(Bit1),
+    .A(state[1]),
     .Cin(Cout0),
     .Y(D1),
     .Cout(Cout1)
@@ -62,14 +65,14 @@ wire Cout2;
 
 dff dff2(
     .D(D2),
-    .Clk(Clk),
-    .Q(Bit2),
-    .Reset(rst)
+    .clk(clk),
+    .Q(state[2]),
+    .rst(realReset)
 );
 
 full_adder fa2(
     .B(1'b0),
-    .A(Bit2),
+    .A(state[2]),
     .Cin(Cout1),
     .Y(D2),
     .Cout(Cout2)
@@ -82,14 +85,14 @@ wire Cout3;
 
 dff dff3(
     .D(D3),
-    .Clk(Clk),
-    .Q(Bit3),
-    .Reset(rst)
+    .clk(clk),
+    .Q(state[3]),
+    .rst(realReset)
 );
 
 full_adder fa3(
     .B(1'b0),
-    .A(Bit3),
+    .A(state[3]),
     .Cin(Cout2),
     .Y(D3),
     .Cout(Cout3)
@@ -102,14 +105,14 @@ wire Cout4;
 
 dff dff4(
     .D(D4),
-    .Clk(Clk),
-    .Q(Bit4),
-    .Reset(rst)
+    .clk(clk),
+    .Q(state[4]),
+    .rst(realReset)
 );
 
 full_adder fa4(
     .B(1'b0),
-    .A(Bit4),
+    .A(state[4]),
     .Cin(Cout3),
     .Y(D4),
     .Cout(Cout4)
@@ -121,14 +124,14 @@ wire D5;
 
 dff dff5(
     .D(D5),
-    .Clk(Clk),
-    .Q(Bit5),
-    .Reset(rst)
+    .clk(clk),
+    .Q(state[5]),
+    .rst(realReset)
 );
 
 full_adder fa5(
     .B(1'b0),
-    .A(Bit5),
+    .A(state[5]),
     .Cin(Cout4),
     .Y(D5)
 );

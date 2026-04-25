@@ -48,6 +48,12 @@ wire [5:0] load_value = sw[15:10];      //Set Timer Value (Value to load in time
 
 //Stopwatch Module Instance
 //Use "clk_1Hz" as clock signal to stopwatch and timer modules
+stopwatch stop(
+    .clk(clk_1Hz),
+    .rst(btnC),
+    .en(run),
+    .state(led[8:3])
+);
 
 
 //Timer Module Instance
