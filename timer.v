@@ -8,6 +8,9 @@ module timer(
     output [5:0] state      //6-bits to represent the highest number 59
 );
 
+// The timer can count when load is 0, rst is 0, en is 1, and state is not 0.
+wire canCount = en & ~rst & ~load & ~(~state[0] & ~state[1] & ~state[2] & ~state[3] & ~state[4] & ~state[5]);
+
 wire [5:0] nextState;
 wire [5:0] enMuxOut;
 mux_2to1 enableMux(
@@ -25,123 +28,119 @@ mux_2to1 loadMux(
     .Y(loadMuxOut)
 );
 
-wire lowerLimit = (~state[5]) & (~state[4]) & (~state[3]) & (~state[2]) & (~state[1]) & (~state[0]);
+
+
+/// COUNTING CIRCUIT ///
 
 //bit 0
 wire D0;
 wire Cout0;
 
 dff dff0(
-    .D(D0),
+    .D(loadMuxOut[0]),
     .clk(clk),
     .Q(state[0]),
     .rst(rst)
 );
 
 full_adder fa0(
-    .B(en),
+    .B(canCount),
     .A(state[0]),
     .Cin(1'b0),
-    .Y(D0),
+    .Y(nextState[0]),
     .Cout(Cout0)
 );
 
 
 //bit 1
-wire D1;
 wire Cout1;
 
 dff dff1(
-    .D(D1),
+    .D(loadMuxOut[1]),
     .clk(clk),
     .Q(state[1]),
     .rst(rst)
 );
 
 full_adder fa1(
-    .B(1'b0),
+    .B(canCount),
     .A(state[1]),
     .Cin(Cout0),
-    .Y(D1),
+    .Y(nextState[1]),
     .Cout(Cout1)
 );
 
 
 //bit 2
-wire D2;
 wire Cout2;
 
 dff dff2(
-    .D(D2),
+    .D(loadMuxOut[2]),
     .clk(clk),
     .Q(state[2]),
     .rst(rst)
 );
 
 full_adder fa2(
-    .B(1'b0),
+    .B(canCount),
     .A(state[2]),
     .Cin(Cout1),
-    .Y(D2),
+    .Y(nextState[2]),
     .Cout(Cout2)
 );
 
 
 //bit 3
-wire D3;
 wire Cout3;
 
 dff dff3(
-    .D(D3),
+    .D(loadMuxOut[3]),
     .clk(clk),
     .Q(state[3]),
     .rst(rst)
 );
 
 full_adder fa3(
-    .B(1'b0),
+    .B(canCount),
     .A(state[3]),
     .Cin(Cout2),
-    .Y(D3),
+    .Y(nextState[3]),
     .Cout(Cout3)
 );
 
 
 //bit 4
-wire D4;
 wire Cout4;
 
 dff dff4(
-    .D(D4),
+    .D(loadMuxOut[4]),
     .clk(clk),
     .Q(state[4]),
     .rst(rst)
 );
 
 full_adder fa4(
-    .B(1'b0),
+    .B(canCount),
     .A(state[4]),
     .Cin(Cout3),
-    .Y(D4),
+    .Y(nextState[4]),
     .Cout(Cout4)
 );
 
 
 //bit 5
-wire D5;
-
 dff dff5(
-    .D(D5),
+    .D(loadMuxOut[5]),
     .clk(clk),
     .Q(state[5]),
     .rst(rst)
 );
 
 full_adder fa5(
-    .B(1'b0),
+    .B(canCount),
     .A(state[5]),
     .Cin(Cout4),
-    .Y(D5)
+    .Y(nextState[5])
 );
 
 endmodule
