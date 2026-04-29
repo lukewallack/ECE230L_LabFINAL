@@ -36,7 +36,7 @@ seven_segment_inf seven_segment_inf_inst (.clk(clk), .rst(btnC), .count(count) ,
 /******** UNCOMMENT & UPDATE THIS SECTION ********/
 //wire "count" feeds in count value to seven segment display. This should be a 6-bit value
 //This will decide if seven segment display shows stopwatch count or timer count
-//wire [5:0] count = ;
+wire [5:0] count;
 
 /******** UPDATE THIS SECTION ********/
 /******* INITIALIZE STOPWATCH AND TIMER MODULE ***********/
@@ -65,6 +65,13 @@ timer newTimer(
     .load(sw[2]),
     .load_value(sw[15:10]),
     .state(led[15:10])
+);
+
+mux_2to1 modeMux(
+    .A(led[8:3]),
+    .B(led[15:10]),
+    .sel(mode),
+    .Y(count)
 );
 
 endmodule
